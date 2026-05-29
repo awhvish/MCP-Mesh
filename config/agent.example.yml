@@ -1,0 +1,45 @@
+# ─────────────────────────────────────────────────────────────────
+# MCP Mesh — Agent Configuration
+# Copy this file to config/agent.yml on each device and fill in.
+# Fields marked [env] can also be set via environment variable.
+# ─────────────────────────────────────────────────────────────────
+
+# [env: MESH_DEVICE_NAME]  Unique name — no spaces, no special chars
+device_name: "my-laptop"
+
+# pc | android | printer
+device_type: "pc"
+
+# [env: MESH_SECRET]  Must match hub's secret exactly
+secret: "replace-with-a-random-64-char-hex-string"
+
+log_level: "INFO"    # DEBUG | INFO | WARN | ERROR
+log_format: "pretty" # pretty | json
+
+mqtt:
+  host: "192.168.1.100"   # IP address of the machine running the hub
+  port: 1883
+  username: "meshuser"
+  # [env: MQTT_PASSWORD]
+  password: "yourpassword"
+  tls: false
+  keepalive: 60
+
+agent:
+  host: "0.0.0.0"
+  port: 7800          # Local MCP server port (Claude Desktop connects here)
+  transfer_port: 7801 # File transfer HTTP port
+
+  # Restrict filesystem access to these directories.
+  # Leave empty [] to allow access to all paths (not recommended).
+  allowed_paths:
+    - "/home"
+    - "/tmp"
+
+  # Allow the run_command tool (executes arbitrary shell commands).
+  # Disable unless you explicitly need it.
+  allow_run_command: false
+
+  # Allow destructive tools: shutdown_system, reboot_system, delete_file.
+  # These always prompt for confirmation regardless of this flag.
+  allow_destructive: true

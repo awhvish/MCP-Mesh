@@ -1,0 +1,27 @@
+# ─────────────────────────────────────────────────────────────────
+# MCP Mesh — Hub Configuration
+# Copy this file to config/hub.yml and fill in your values.
+# Fields marked [env] can also be set via environment variable.
+# ─────────────────────────────────────────────────────────────────
+
+# [env: ANTHROPIC_API_KEY]  Required for NLP routing
+anthropic_api_key: "sk-ant-..."
+
+log_level: "INFO"    # DEBUG | INFO | WARN | ERROR
+log_format: "pretty" # pretty (coloured terminal) | json (structured, for prod)
+
+hub:
+  host: "0.0.0.0"
+  port: 7700
+  # [env: MESH_SECRET]  Shared secret — must match every agent's config
+  # Generate with: python -c "import secrets; print(secrets.token_hex(32))"
+  secret: "replace-with-a-random-64-char-hex-string"
+
+mqtt:
+  host: "localhost"      # Mosquitto broker address (usually same machine as hub)
+  port: 1883
+  username: "meshuser"
+  # [env: MQTT_PASSWORD]
+  password: "yourpassword"
+  tls: false             # Set true when using TLS certs (Phase 10)
+  keepalive: 60          # seconds

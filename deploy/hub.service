@@ -1,0 +1,38 @@
+[Unit]
+Description=MCP Mesh — Central Hub
+Documentation=https://github.com/mcp-mesh/agent
+After=network-online.target mosquitto.service
+Wants=network-online.target
+Requires=mosquitto.service
+
+[Service]
+Type=simple
+User=meshuser
+Group=meshuser
+WorkingDirectory=/opt/mcp-mesh
+
+# Load secrets from environment file (never put secrets in this unit file)
+EnvironmentFile=-/etc/mcp-mesh/hub.env
+
+ExecStart=/opt/mcp-mesh/venv/bin/python hub/main.py
+ExecReload=/bin/kill -HUP $MAINPID
+
+Restart=always
+RestartSec=5
+StartLimitInterval=60
+StartLimitBurst=5
+
+# Logging goes to journald; view with: journalctl -u mcp-mesh-hub -f
+StandardOutput=journal
+StandardError=journal
+SyslogIdentifier=mcp-mesh-hub
+
+# Harden the service
+NoNewPrivileges=yes
+ProtectSystem=strict
+ProtectHome=read-only
+PrivateTmp=yes
+ReadWritePaths=/opt/mcp-mesh /var/log/mcp-mesh
+
+[Install]
+WantedBy=multi-user.target

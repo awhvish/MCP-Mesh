@@ -1,0 +1,28 @@
+[Unit]
+Description=MCP Mesh — Device Agent (%i)
+Documentation=https://github.com/mcp-mesh/agent
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=%i
+WorkingDirectory=/home/%i
+
+EnvironmentFile=-/home/%i/.config/mcp-mesh/agent.env
+ExecStart=/home/%i/.local/bin/mesh-agent --config /home/%i/.config/mcp-mesh/agent.yml
+
+Restart=always
+RestartSec=5
+StartLimitInterval=60
+StartLimitBurst=5
+
+StandardOutput=journal
+StandardError=journal
+SyslogIdentifier=mcp-mesh-agent
+
+NoNewPrivileges=yes
+PrivateTmp=yes
+
+[Install]
+WantedBy=multi-user.target
