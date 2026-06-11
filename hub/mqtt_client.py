@@ -142,12 +142,15 @@ class MQTTClient:
 
     async def _dispatch(self, topic: str, device_name: str, payload: dict) -> None:
         """Route an incoming message to the right handler by topic suffix."""
-        if topic.endswith("/register"):
-            await self._handle_register(device_name, payload)
-        elif topic.endswith("/status"):
-            await self._handle_status(device_name, payload)
-        elif topic.endswith("/tools/result"):
-            await self._handle_result(device_name, payload)
+        try:
+            if topic.endswith("/register"):
+                await self._handle_register(device_name, payload)
+            elif topic.endswith("/status"):
+                await self._handle_status(device_name, payload)
+            elif topic.endswith("/tools/result"):
+                await self._handle_result(device_name, payload)
+        except Exception as exc:
+            log.error("dispatch_error", topic=topic, device=device_name, error=str(exc))
 
     async def _handle_register(self, device_name: str, payload: dict) -> None:
         device = await self.registry.register(payload)

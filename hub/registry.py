@@ -105,7 +105,7 @@ class Registry:
                     description=t.get("description", ""),
                     schema=t.get("schema", {}),
                 )
-                for t in payload.get("tools", [])
+                for t in (payload.get("tools") or [])
             ]
 
             if name in self._devices:

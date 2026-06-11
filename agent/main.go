@@ -23,6 +23,7 @@ import (
 	"github.com/mcp-mesh/agent/config"
 	agentlogger "github.com/mcp-mesh/agent/logger"
 	agentmqtt "github.com/mcp-mesh/agent/mqtt"
+	"github.com/mcp-mesh/agent/tools"
 )
 
 func main() {
@@ -52,16 +53,13 @@ func main() {
 		return
 	}
 
-	// Phase 2: connect to MQTT broker.
-	// nil executor → noopExecutor (returns error for all tool calls).
-	// Phase 3 replaces nil with a real ToolRegistry.
-	mqttClient := agentmqtt.NewClient(cfg, nil)
+	toolRegistry := tools.NewRegistry(cfg)
+	mqttClient := agentmqtt.NewClient(cfg, toolRegistry)
 	if err := mqttClient.Connect(); err != nil {
 		slog.Error("mqtt connect failed", "error", err)
 		os.Exit(1)
 	}
 
-	// ── Phase 3: tool registry goes here ──────────────────────────────────
 	// ── Phase 4: local MCP server starts here ─────────────────────────────
 	// ── Phase 6: file transfer HTTP server starts here ────────────────────
 
